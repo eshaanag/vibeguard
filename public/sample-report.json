@@ -1,0 +1,40 @@
+{
+    "repoName": "acme-corp-leaky-repo",
+    "scanId": "sample-uuid-1234",
+    "scannerUsed": "VibeGuard Regex (Sample)",
+    "score": 85,
+    "label": "CRITICAL",
+    "color": "text-red-600",
+    "summary": {
+        "high": 1,
+        "medium": 1,
+        "low": 1
+    },
+    "findings": [
+        {
+            "file": "src/config/aws.js",
+            "line": 12,
+            "snippet": "const AWS_SECRET = \"FAKE_AWS_KEY_EXAMPLE\"",
+            "ruleId": "aws-access-key",
+            "severity": "HIGH",
+            "fixHint": "Inactivate this AWS Access Key and rotate your credentials."
+        },
+        {
+            "file": "scripts/notify.sh",
+            "line": 5,
+            "snippet": "curl -X POST https://hooks.slack.com/services/FAKE/WEBHOOK/DO_NOT_USE",
+            "ruleId": "slack-webhook",
+            "severity": "MEDIUM",
+            "fixHint": "Revoke this Slack webhook and use a more secure integration method."
+        },
+        {
+            "file": "docs/setup.md",
+            "line": 42,
+            "snippet": "Don't forget to use the password 'FAKE_PASSWORD' for the staging DB.",
+            "ruleId": "generic-secret",
+            "severity": "LOW",
+            "fixHint": "Do not hardcode secrets. Use environment variables or a secret manager."
+        }
+    ],
+    "scannedAt": "2026-02-24T12:00:00Z"
+}

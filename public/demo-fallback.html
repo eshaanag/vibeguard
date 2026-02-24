@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VibeGuard Demo Fallback</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background: #0a0e1a; color: white; }
+        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.05); }
+    </style>
+</head>
+<body class="p-12">
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-4xl font-black text-cyan-400 mb-8">VibeGuard Dashboard <span class="text-sm font-normal text-gray-500 uppercase tracking-widest ml-4">(Offline Demo Mode)</span></h1>
+        
+        <div class="glass p-8 rounded-3xl mb-8 flex items-center justify-between border-l-8 border-red-600">
+            <div>
+                <h2 class="text-2xl font-bold">acme-corp-leaky-repo</h2>
+                <p class="text-gray-500">Scan completed using sample data</p>
+            </div>
+            <div class="text-right">
+                <span class="text-6xl font-black text-red-600">85</span>
+                <span class="block text-xs uppercase tracking-widest text-red-600 font-bold">Risk Score: CRITICAL</span>
+            </div>
+        </div>
+
+        <div class="space-y-4">
+            <div class="glass p-6 rounded-2xl border-l-4 border-red-500">
+                <div class="flex justify-between mb-2">
+                    <span class="text-xs bg-red-500 text-black px-2 py-0.5 rounded font-bold">HIGH RISK</span>
+                    <span class="text-xs text-gray-500">src/config/aws.js:12</span>
+                </div>
+                <code class="block bg-black/50 p-3 rounded text-sm mb-2">const AWS_SECRET = "AKIAIOSFODNN7EXAMPLE"</code>
+                <p class="text-xs text-gray-400"><span class="text-cyan-400 font-bold uppercase">Fix:</span> Inactivate this AWS Access Key and rotate your credentials.</p>
+            </div>
+
+            <div class="glass p-6 rounded-2xl border-l-4 border-orange-500">
+                <div class="flex justify-between mb-2">
+                    <span class="text-xs bg-orange-500 text-black px-2 py-0.5 rounded font-bold">MEDIUM RISK</span>
+                    <span class="text-xs text-gray-500">scripts/notify.sh:5</span>
+                </div>
+                <code class="block bg-black/50 p-3 rounded text-sm mb-2">curl -X POST https://hooks.slack.com/services/T000...</code>
+                <p class="text-xs text-gray-400"><span class="text-cyan-400 font-bold uppercase">Fix:</span> Revoke this Slack webhook.</p>
+            </div>
+        </div>
+
+        <p class="mt-12 text-center text-gray-700 text-sm uppercase tracking-widest">Pre-generated demonstration for VibeGuard Prototype</p>
+    </div>
+</body>
+</html>

@@ -1,0 +1,41 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 255, 255, 255;
+  --background-start-rgb: 0, 0, 0;
+  --background-end-rgb: 0, 0, 0;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: #0a0e1a;
+}
+
+.risk-gauge {
+  background: conic-gradient(
+    currentColor var(--percentage),
+    rgba(255, 255, 255, 0.1) 0
+  );
+  border-radius: 50%;
+  position: relative;
+}
+
+.risk-gauge::after {
+  content: "";
+  position: absolute;
+  inset: 15%;
+  background: #0a0e1a;
+  border-radius: 50%;
+}
+
+.glass {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.security-border {
+  border-left: 4px solid;
+}
