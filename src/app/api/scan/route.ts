@@ -4,8 +4,10 @@ import { v4 as uuidv4 } from 'uuid';
 import fs from 'fs';
 import path from 'path';
 import AdmZip from 'adm-zip';
-import { runScan } from '@/lib/scanner';
+import { runScan, enrichFindingsWithAI } from '@/lib/scanner';
 import { calculateRiskScore } from '@/lib/scorer';
+import { generateSummary } from '@/lib/ai/geminiClient';
+import { parseAIResponse } from '@/lib/ai/parser';
 
 export async function POST(req: NextRequest) {
     const scanId = uuidv4();
@@ -44,12 +46,21 @@ export async function POST(req: NextRequest) {
         const { findings, scannerUsed } = await runScan(repoDir);
         const riskData = calculateRiskScore(findings);
 
+        // Enrich with AI Remediation
+        const enrichedFindings = await enrichFindingsWithAI(findings);
+
+        // Generate AI Executive Summary
+        const aiSummaryRaw = await generateSummary(repoName, enrichedFindings);
+        const aiSummaryParsed = parseAIResponse(aiSummaryRaw);
+        const aiSummary = aiSummaryParsed?.summary || aiSummaryRaw;
+
         return NextResponse.json({
             repoName,
             scanId,
             scannerUsed,
             ...riskData,
-            findings,
+            findings: enrichedFindings,
+            aiSummary,
             scannedAt: new Date().toISOString()
         });
 

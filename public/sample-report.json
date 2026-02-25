@@ -1,7 +1,7 @@
 {
     "repoName": "acme-corp-leaky-repo",
     "scanId": "sample-uuid-1234",
-    "scannerUsed": "VibeGuard Regex (Sample)",
+    "scannerUsed": "VibeGuard + Gemini Pro AI",
     "score": 85,
     "label": "CRITICAL",
     "color": "text-red-600",
@@ -10,6 +10,7 @@
         "medium": 1,
         "low": 1
     },
+    "aiSummary": "This repository contains multiple high-security risks, including exposed AWS credentials and Slack webhooks. Immediate rotation of secrets and implementation of a centralized secret management system is required to prevent unauthorized access.",
     "findings": [
         {
             "file": "src/config/aws.js",
@@ -17,7 +18,11 @@
             "snippet": "const AWS_SECRET = \"FAKE_AWS_KEY_EXAMPLE\"",
             "ruleId": "aws-access-key",
             "severity": "HIGH",
-            "fixHint": "Inactivate this AWS Access Key and rotate your credentials."
+            "fixHint": "Inactivate this AWS Access Key and rotate your credentials.",
+            "aiExplanation": "The code contains a hardcoded AWS Access Key. This allows anyone with access to the codebase (including unauthorized persons or leaked copies) to access your AWS resources, leading to potential data theft, infrastructure tampering, or high costs.",
+            "aiFixSteps": "1. Invalidate this key in the AWS Console immediately.\n2. Create a new IAM user with minimum necessary permissions.\n3. Move the key to an environment variable or AWS Secrets Manager.\n4. Update your code to read from the environment.",
+            "secureCode": "const AWS_SECRET = process.env.AWS_SECRET_ACCESS_KEY; // Loaded via environment",
+            "confidence": 0.98
         },
         {
             "file": "scripts/notify.sh",
@@ -25,16 +30,12 @@
             "snippet": "curl -X POST https://hooks.slack.com/services/FAKE/WEBHOOK/DO_NOT_USE",
             "ruleId": "slack-webhook",
             "severity": "MEDIUM",
-            "fixHint": "Revoke this Slack webhook and use a more secure integration method."
-        },
-        {
-            "file": "docs/setup.md",
-            "line": 42,
-            "snippet": "Don't forget to use the password 'FAKE_PASSWORD' for the staging DB.",
-            "ruleId": "generic-secret",
-            "severity": "LOW",
-            "fixHint": "Do not hardcode secrets. Use environment variables or a secret manager."
+            "fixHint": "Revoke this Slack webhook and use a more secure integration method.",
+            "aiExplanation": "A Slack Incoming Webhook URL is exposed. This can be abused by malicious actors to send spam or deceptive messages to your Slack channels, potentially leading to phishing attacks within your organization.",
+            "aiFixSteps": "1. Go to your Slack App settings and revoke the webhook.\n2. Create a new webhook.\n3. Store the webhook URL in a secure environment variable.",
+            "secureCode": "# Set SLACK_WEBHOOK_URL in your environment\ncurl -X POST $SLACK_WEBHOOK_URL -d '{\"text\":\"Secure notification\"}'",
+            "confidence": 0.95
         }
     ],
-    "scannedAt": "2026-02-24T12:00:00Z"
+    "scannedAt": "2026-02-25T12:00:00Z"
 }
