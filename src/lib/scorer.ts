@@ -5,7 +5,7 @@ export function calculateRiskScore(findings: Finding[]) {
     const mediumCount = findings.filter(f => f.severity === 'MEDIUM').length;
     const lowCount = findings.filter(f => f.severity === 'LOW').length;
 
-    const score = Math.min(100, 60 * highCount + 20 * mediumCount + 5 * lowCount);
+    const score = Math.min(100, 70 * highCount + 30 * mediumCount + 5 * lowCount);
 
     let label = 'LOW';
     let color = 'text-green-500';

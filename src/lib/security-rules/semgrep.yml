@@ -1,0 +1,20 @@
+rules:
+- id: idor-route
+  pattern: app.get("/user/:id", ...)
+  message: IDOR vulnerability detected
+  severity: ERROR
+
+- id: missing-auth
+  pattern: app.get($ROUTE, ($REQ,$RES)=>...)
+  message: Missing authentication middleware
+  severity: WARNING
+
+- id: ui-only-auth
+  pattern: if (user.role === "admin")
+  message: UI-only authorization detected
+  severity: WARNING
+
+- id: weak-md5
+  pattern: crypto.createHash("md5")
+  message: Weak crypto detected
+  severity: WARNING

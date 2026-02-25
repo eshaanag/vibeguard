@@ -60,6 +60,7 @@ export async function POST(req: NextRequest) {
             scannerUsed,
             ...riskData,
             findings: enrichedFindings,
+            logicFindingsCount: enrichedFindings.filter(f => f.ruleId.includes('-') || f.ruleId === 'plaintext-password').length,
             aiSummary,
             scannedAt: new Date().toISOString()
         });

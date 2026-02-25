@@ -6,8 +6,13 @@ import { generateAIResponse } from './ai/geminiClient';
 import { FINDING_PROMPT_TEMPLATE, SYSTEM_PROMPT } from './ai/prompts';
 import { parseAIResponse } from './ai/parser';
 import { getCacheKey, loadCache, saveToCache } from './ai/cache';
+import { runLogicScanner } from "./logicScanner";
+import { runSemgrep } from "./semgrepRunner";
 
 export async function runScan(targetDir: string): Promise<{ findings: Finding[], scannerUsed: string }> {
+    const findings: Finding[] = [];
+    const scannersUsed: string[] = [];
+
     let gitleaksAvailable = false;
     try {
         execSync('gitleaks version', { stdio: 'ignore' });
@@ -22,18 +27,30 @@ export async function runScan(targetDir: string): Promise<{ findings: Finding[],
             // Run gitleaks detect. --exit-code 0 ensures it doesn't throw even if findings are found.
             execSync(`gitleaks detect --source ${targetDir} --report-format json --report-path ${reportPath} --no-git --exit-code 0`, { stdio: 'inherit' });
             if (fs.existsSync(reportPath)) {
-                const findings = parseGitleaks(fs.readFileSync(reportPath, 'utf-8'));
-                return { findings, scannerUsed: 'Gitleaks' };
+                const gitleaksFindings = parseGitleaks(fs.readFileSync(reportPath, 'utf-8'));
+                findings.push(...gitleaksFindings);
+                scannersUsed.push('Gitleaks');
             }
         } catch (e) {
-            console.error('Gitleaks execution failed, falling back to regex scanner:', e);
+            console.error('Gitleaks execution failed:', e);
         }
     }
 
-    // Fallback to internal regex scanner
-    const findings = scanDirectory(targetDir, targetDir);
-    return { findings, scannerUsed: 'VibeGuard Regex (Fallback)' };
+    // Always run internal scanners for logic and specific patterns
+    // Fallback to internal regex scanner if Gitleaks didn't run or as a supplement
+    const regexFindings = scanDirectory(targetDir, targetDir);
+    const logicFindings = runLogicScanner(targetDir);
+    const semgrepFindings = runSemgrep(targetDir);
+
+    findings.push(...regexFindings, ...logicFindings, ...semgrepFindings);
+    scannersUsed.push('VibeGuard (Regex + Logic + Semgrep)');
+
+    return {
+        findings,
+        scannerUsed: scannersUsed.join(' + ')
+    };
 }
+
 
 export async function enrichFindingsWithAI(findings: Finding[]): Promise<Finding[]> {
     const cache = loadCache();

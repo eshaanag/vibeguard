@@ -27,6 +27,7 @@ interface ScanResult {
     color: string;
     summary: { high: number; medium: number; low: number };
     findings: Finding[];
+    logicFindingsCount?: number;
     aiSummary?: string;
     scannedAt: string;
 }
@@ -260,9 +261,9 @@ export default function Home() {
                                 </div>
 
                                 <div className="grid grid-cols-3 gap-6 relative z-10">
-                                    <SummaryCard value={result.summary.high} label="CRITICAL" color="from-red-600/20 to-red-600/5" textColor="text-red-500" />
-                                    <SummaryCard value={result.summary.medium} label="ELEVATED" color="from-orange-500/20 to-orange-500/5" textColor="text-orange-500" />
-                                    <SummaryCard value={result.summary.low} label="MINOR" color="from-green-500/20 to-green-500/5" textColor="text-green-500" />
+                                    <SummaryCard value={result.summary.high} label="CRITICAL VIBE" color="from-red-600 to-rose-600" textColor="text-white" />
+                                    <SummaryCard value={result.summary.medium} label="MODERATE" color="from-orange-500 to-amber-500" textColor="text-white" />
+                                    <SummaryCard value={result.logicFindingsCount || 0} label="LOGIC FLAWS" color="from-cyan-600 to-blue-600" textColor="text-white" />
                                 </div>
                             </div>
                         </div>
@@ -318,6 +319,42 @@ export default function Home() {
                                 </div>
                             )}
                         </section>
+
+                        {/* Logic Vulnerabilities Section */}
+                        {result.findings.some(f => f.ruleId.includes('-') || f.ruleId === 'plaintext-password') && (
+                            <section className="mt-20">
+                                <div className="flex flex-col md:flex-row justify-between items-end gap-6 mb-12">
+                                    <div className="space-y-4">
+                                        <div className="flex items-center gap-3">
+                                            <div className="w-12 h-[1px] bg-cyan-500/50"></div>
+                                            <span className="text-cyan-500 text-xs font-black tracking-[0.4em] uppercase">Architecture Logic</span>
+                                        </div>
+                                        <h3 className="text-4xl md:text-5xl font-black italic text-white tracking-tighter">
+                                            LOGIC <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-600">VULNERABILITIES</span>
+                                        </h3>
+                                    </div>
+                                </div>
+
+                                <div className="grid grid-cols-1 gap-8">
+                                    {result.findings.filter(f => f.ruleId.includes('-') || f.ruleId === 'plaintext-password').map((finding, idx) => (
+                                        <div key={`logic-${idx}`} className="glass rounded-[2rem] p-8 border border-cyan-500/20 bg-cyan-500/5">
+                                            <div className="flex justify-between items-center mb-4">
+                                                <span className="text-[10px] font-black bg-cyan-500 text-black px-3 py-1 rounded-lg uppercase tracking-widest">
+                                                    LOGIC FLAG
+                                                </span>
+                                                <span className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">
+                                                    {finding.ruleId}
+                                                </span>
+                                            </div>
+                                            <h4 className="text-xl font-bold text-white mb-2 break-all">{finding.file}</h4>
+                                            <div className="bg-black/40 p-4 rounded-xl font-mono text-sm text-cyan-400/80 mb-4 whitespace-pre-wrap">
+                                                {finding.snippet}
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </section>
+                        )}
                     </div>
                 )}
             </div>

@@ -1,0 +1,39 @@
+[
+    {
+        "id": "plaintext-password",
+        "pattern": "password\\s*[:=]\\s*[\"'][^\"']+[\"']",
+        "severity": "HIGH",
+        "description": "Plaintext password detected"
+    },
+    {
+        "id": "users-json-storage",
+        "pattern": "\"password\"\\s*:\\s*\".+\"",
+        "path": "users.json",
+        "severity": "HIGH"
+    },
+    {
+        "id": "weak-hash-md5",
+        "pattern": "createHash\\(['\"]md5['\"]\\)",
+        "severity": "MEDIUM"
+    },
+    {
+        "id": "cors-all",
+        "pattern": "origin\\s*:\\s*[\"']\\*[\"']",
+        "severity": "MEDIUM"
+    },
+    {
+        "id": "process-env-exposure",
+        "pattern": "res\\.(send|json)\\(process\\.env\\)",
+        "severity": "HIGH"
+    },
+    {
+        "id": "jwt-hardcoded",
+        "pattern": "eyJ[A-Za-z0-9_-]+\\.[A-Za-z0-9_-]+\\.",
+        "severity": "HIGH"
+    },
+    {
+        "id": "localstorage-token",
+        "pattern": "localStorage\\.setItem\\([\"']token",
+        "severity": "MEDIUM"
+    }
+]
