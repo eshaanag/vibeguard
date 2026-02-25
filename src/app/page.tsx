@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from 'react';
+import ScanProgress from '@/components/ScanProgress';
 
 interface Finding {
     file: string;
@@ -37,10 +38,12 @@ export default function Home() {
     const [result, setResult] = useState<ScanResult | null>(null);
     const [error, setError] = useState('');
     const [activeFindingTab, setActiveFindingTab] = useState<Record<number, 'explanation' | 'fix' | 'code'>>({});
+    const [isScanning, setIsScanning] = useState(false);
 
     const handleScan = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
+        setIsScanning(true);
         setResult(null);
         setError('');
         setActiveFindingTab({});
@@ -65,6 +68,7 @@ export default function Home() {
             setError('An unexpected error occurred during the scan.');
         } finally {
             setLoading(false);
+            setIsScanning(false);
         }
     };
 
@@ -200,6 +204,8 @@ export default function Home() {
                         )}
                     </div>
                 </section>
+
+                <ScanProgress isScanning={isScanning} />
 
                 {result && (
                     <div className="space-y-12 animate-slide-up [animation-delay:200ms]">
