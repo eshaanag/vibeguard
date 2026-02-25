@@ -39,39 +39,41 @@ export async function enrichFindingsWithAI(findings: Finding[]): Promise<Finding
     const cache = loadCache();
     const limitedFindings = findings.slice(0, 10); // Limit to top 10 for performance
 
-    // Process findings through AI remediation
-    const enriched = await Promise.all(limitedFindings.map(async (finding) => {
+    // Process findings through AI remediation sequentially to avoid rate limits
+    const enriched: Finding[] = [];
+    for (const finding of limitedFindings) {
         const cacheKey = getCacheKey(finding.file, finding.snippet);
 
         if (cache[cacheKey] && process.env.DEMO_MODE === 'true') {
             console.log(`Using cached AI remediation for ${finding.file}`);
-            return { ...finding, ...cache[cacheKey] };
+            enriched.push({ ...finding, ...cache[cacheKey] });
+            continue;
         }
 
         try {
+            // Standardize path for prompt
+            const displayFile = finding.file.split('/repo/').pop() || finding.file;
+
             const prompt = FINDING_PROMPT_TEMPLATE
-                .replace('{{file}}', finding.file)
+                .replace('{{file}}', displayFile)
                 .replace('{{line}}', finding.line.toString())
                 .replace('{{ruleId}}', finding.ruleId)
                 .replace('{{snippet}}', finding.snippet);
-
-            // Simple concurrency limiting by delaying slightly if not cached
-            // (In a real app, use p-limit)
-            await new Promise(resolve => setTimeout(resolve, Math.random() * 2000));
 
             const aiText = await generateAIResponse(prompt, SYSTEM_PROMPT);
             const aiData = parseAIResponse(aiText);
 
             if (aiData) {
                 saveToCache(cacheKey, aiData);
-                return { ...finding, ...aiData };
+                enriched.push({ ...finding, ...aiData });
+                continue;
             }
         } catch (error) {
             console.error(`AI enrichment failed for ${finding.file}:`, error);
         }
 
-        return finding; // Fallback to original finding if AI fails
-    }));
+        enriched.push(finding); // Fallback to original finding if AI fails
+    }
 
     return enriched;
 }

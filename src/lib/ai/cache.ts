@@ -5,7 +5,9 @@ import crypto from 'crypto';
 const CACHE_FILE = path.join(process.cwd(), 'tmp', 'ai-cache.json');
 
 export function getCacheKey(file: string, snippet: string): string {
-    return crypto.createHash('md5').update(`${file}:${snippet}`).digest('hex');
+    // Standardize path to be relative to the temporary repository root to ensure cache hits across scans
+    const relativeFile = file.split('/repo/').pop() || path.basename(file);
+    return crypto.createHash('md5').update(`${relativeFile}:${snippet}`).digest('hex');
 }
 
 export function loadCache(): Record<string, any> {

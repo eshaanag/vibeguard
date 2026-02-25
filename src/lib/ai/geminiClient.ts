@@ -21,12 +21,17 @@ export async function generateAIResponse(prompt: string, systemPrompt: string = 
             systemInstruction: systemPrompt
         });
 
+        const logFile = path.join(process.cwd(), 'tmp', 'gemini-errors.log');
+        fs.appendFileSync(logFile, `[${new Date().toISOString()}] Starting Gemini request (${model.model.split('/').pop()})...\n`);
+
         const result = await Promise.race([
             model.generateContent(prompt),
             new Promise((_, reject) =>
-                setTimeout(() => reject(new Error("Timeout")), 45000)
+                setTimeout(() => reject(new Error("Timeout")), 90000)
             )
         ]) as any;
+
+        fs.appendFileSync(logFile, `[${new Date().toISOString()}] Gemini request completed.\n`);
 
         const response = await result.response;
         const text = response.text();
@@ -45,8 +50,10 @@ export async function generateSummary(repoName: string, findings: Finding[]) {
         .replace('{{repoName}}', repoName)
         .replace('{{findingsList}}', findingsList);
 
+    const summarySystemPrompt = "You are a senior security researcher. Provide a short executive summary of vulnerability findings in JSON format with a single key 'summary'. Be extremely concise.";
+
     try {
-        const response = await generateAIResponse(prompt, SYSTEM_PROMPT);
+        const response = await generateAIResponse(prompt, summarySystemPrompt);
         return response;
     } catch (error) {
         console.error("Summary generation failed:", error);

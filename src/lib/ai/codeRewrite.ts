@@ -72,12 +72,17 @@ SOLUTION:
 `;
 
     try {
+        const logFile = path.join(process.cwd(), 'tmp', 'gemini-errors.log');
+        fs.appendFileSync(logFile, `[${new Date().toISOString()}] Starting Solution generation for: ${finding.ruleId}\n`);
+
         const result = await Promise.race([
             model.generateContent(prompt),
             new Promise((_, reject) =>
-                setTimeout(() => reject(new Error("Timeout")), 45000)
+                setTimeout(() => reject(new Error("Timeout")), 90000)
             )
         ]) as any;
+
+        fs.appendFileSync(logFile, `[${new Date().toISOString()}] Solution generation completed.\n`);
 
         const responseText = result.response.text();
 
