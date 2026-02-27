@@ -18,7 +18,6 @@ export default function ScanProgress({ isScanning }: { isScanning: boolean }) {
 
     useEffect(() => {
         if (!isScanning) {
-            // Delay resetting so completion state is visible for a moment
             const timer = setTimeout(() => setCurrentStep(0), 1000);
             return () => clearTimeout(timer);
         }
@@ -32,7 +31,7 @@ export default function ScanProgress({ isScanning }: { isScanning: boolean }) {
             } else {
                 clearInterval(interval)
             }
-        }, 1200) // Slightly slower for better demo "drama"
+        }, 1200)
 
         return () => clearInterval(interval)
     }, [isScanning])
@@ -40,19 +39,19 @@ export default function ScanProgress({ isScanning }: { isScanning: boolean }) {
     if (!isScanning && currentStep === 0) return null
 
     return (
-        <div className="scanBox animate-slide-up">
+        <div className="tech-panel p-6 md:p-10 border-neon-green/30 bg-neon-green/5 animate-fade-in mt-12 mb-12">
             <div className="flex items-center justify-between mb-8">
-                <h3 className="text-xs font-black uppercase tracking-[0.4em] text-cyan-500 flex items-center gap-3">
-                    <span className="w-8 h-[1px] bg-cyan-500/50"></span>
+                <h3 className="text-xs font-black uppercase tracking-[0.4em] text-neon-green flex items-center gap-3">
+                    <span className="w-8 h-[1px] bg-neon-green/50"></span>
                     Live Analysis Stream
                 </h3>
                 {currentStep < steps.length - 1 ? (
-                    <div className="flex items-center gap-2 text-[10px] font-bold text-cyan-400/60 uppercase tracking-widest italic animate-pulse">
+                    <div className="flex items-center gap-2 text-[10px] font-bold text-soft-cyan uppercase tracking-widest italic animate-pulse">
                         <FaSpinner className="animate-spin" />
                         In Progress
                     </div>
                 ) : (
-                    <div className="flex items-center gap-2 text-[10px] font-bold text-green-400 uppercase tracking-widest italic">
+                    <div className="flex items-center gap-2 text-[10px] font-bold text-neon-green uppercase tracking-widest italic">
                         <FaCheckCircle />
                         Sequence Complete
                     </div>
@@ -64,20 +63,20 @@ export default function ScanProgress({ isScanning }: { isScanning: boolean }) {
                     <div
                         key={index}
                         className={`flex items-center gap-4 transition-all duration-500 ${index === currentStep ? "opacity-100 scale-105 origin-left" :
-                                index < currentStep ? "opacity-40" : "opacity-20"
+                            index < currentStep ? "opacity-40" : "opacity-20"
                             }`}
                     >
                         <div className="flex-shrink-0 w-8 flex justify-center">
                             {index < currentStep ? (
-                                <FaCheckCircle className="text-cyan-500 text-xs" />
+                                <FaCheckCircle className="text-neon-green text-xs" />
                             ) : index === currentStep ? (
-                                <FaSpinner className="text-cyan-400 animate-spin text-xs" />
+                                <FaSpinner className="text-soft-cyan animate-spin text-xs" />
                             ) : (
                                 <FaCircle className="text-gray-600 text-[6px]" />
                             )}
                         </div>
 
-                        <div className={`text-[11px] font-black tracking-widest uppercase flex-1 ${index === currentStep ? "text-cyan-100" : "text-gray-400"
+                        <div className={`text-[11px] font-black tracking-widest uppercase flex-1 ${index === currentStep ? "text-white" : "text-gray-400"
                             }`}>
                             {step}
                             {index === currentStep && (
@@ -90,10 +89,10 @@ export default function ScanProgress({ isScanning }: { isScanning: boolean }) {
                         </div>
 
                         {index < currentStep && (
-                            <div className="text-[9px] font-mono text-cyan-500/40">100%</div>
+                            <div className="text-[9px] font-mono text-neon-green/40">100%</div>
                         )}
                         {index === currentStep && (
-                            <div className="text-[9px] font-mono text-cyan-400 animate-pulse">PROCESSING</div>
+                            <div className="text-[9px] font-mono text-soft-cyan animate-pulse">PROCESSING</div>
                         )}
                     </div>
                 ))}
@@ -102,7 +101,7 @@ export default function ScanProgress({ isScanning }: { isScanning: boolean }) {
             <div className="mt-8 pt-6 border-t border-white/5 flex flex-col gap-2">
                 <div className="h-1 w-full bg-white/5 rounded-full overflow-hidden">
                     <div
-                        className="h-full bg-gradient-to-r from-cyan-600 via-cyan-400 to-blue-500 transition-all duration-1000 ease-out"
+                        className="h-full bg-gradient-to-r from-neon-green via-soft-cyan to-neon-green transition-all duration-1000 ease-out shadow-[0_0_10px_rgba(57,255,20,0.5)]"
                         style={{ width: `${((currentStep + 1) / steps.length) * 100}%` }}
                     />
                 </div>

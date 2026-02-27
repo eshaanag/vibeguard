@@ -17,7 +17,7 @@ export async function generateAIResponse(prompt: string, systemPrompt: string = 
 
     try {
         const model = genAI.getGenerativeModel({
-            model: "gemini-3.1-pro-preview",
+            model: "gemini-flash-latest",
             systemInstruction: systemPrompt
         });
 

@@ -3,168 +3,160 @@
 @tailwind utilities;
 
 :root {
-  --foreground-rgb: 255, 255, 255;
-  --background-start-rgb: 5, 8, 15;
-  --background-end-rgb: 10, 14, 26;
+  --neon-green: #39FF14;
+  --soft-cyan: #00FFFF;
+  --deep-black: #050505;
+  --dark-teal: #002B2B;
+  --glow-green: rgba(57, 255, 20, 0.4);
+  --glow-cyan: rgba(0, 255, 255, 0.3);
+}
 
-  --cyber-cyan: #00f2ff;
-  --vibe-red: #ff3e3e;
-  --glow-opacity: 0.15;
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
 }
 
 body {
-  color: rgb(var(--foreground-rgb));
-  background: radial-gradient(circle at top center, #1a1f35 0%, #0a0e1a 100%);
+  color: #FFFFFF;
+  background: radial-gradient(circle at top center, var(--dark-teal) 0%, var(--deep-black) 100%);
+  background-attachment: fixed;
   min-height: 100vh;
-  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  overflow-x: hidden;
 }
 
-/* Premium Glassmorphism */
-.glass {
-  background: rgba(255, 255, 255, 0.02);
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+/* Futuristic Typography */
+h1, h2, h3, h4, h5, h6 {
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 800;
 }
 
-.glass-hover:hover {
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  transform: translateY(-2px);
-  box-shadow: 0 12px 48px 0 rgba(0, 0, 0, 0.5);
+.text-glow {
+  text-shadow: 0 0 10px var(--glow-green);
 }
 
-/* AI Magical Glow */
-.ai-glow {
+.text-glow-cyan {
+  text-shadow: 0 0 10px var(--glow-cyan);
+}
+
+/* Tech Panels */
+.tech-panel {
+  background: rgba(10, 20, 20, 0.7);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--neon-green);
+  border-radius: 4px;
   position: relative;
   overflow: hidden;
+  box-shadow: 0 0 15px rgba(57, 255, 20, 0.1);
+  transition: all 0.3s ease;
 }
 
-.ai-glow::before {
-  content: "";
+.tech-panel:hover {
+  box-shadow: 0 0 25px rgba(57, 255, 20, 0.2);
+  border-color: var(--soft-cyan);
+}
+
+.tech-panel::before {
+  content: '';
   position: absolute;
-  inset: -1px;
-  background: linear-gradient(45deg, transparent, rgba(0, 242, 255, 0.3), transparent);
-  z-index: -1;
-  animation: borderGlow 4s linear infinite;
+  top: 0;
+  left: 0;
+  width: 10px;
+  height: 10px;
+  border-top: 2px solid var(--neon-green);
+  border-left: 2px solid var(--neon-green);
 }
 
-@keyframes borderGlow {
-  0% {
-    transform: translateX(-100%);
-  }
-
-  100% {
-    transform: translateX(100%);
-  }
+/* Glow Buttons */
+.btn-glow {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 2rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--deep-black);
+  background: var(--neon-green);
+  border: none;
+  cursor: pointer;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+  clip-path: polygon(10% 0, 100% 0, 100% 70%, 90% 100%, 0 100%, 0 30%);
 }
 
-/* Premium Risk Gauge */
+.btn-glow:hover {
+  background: var(--soft-cyan);
+  box-shadow: 0 0 20px var(--soft-cyan);
+  transform: translateY(-2px);
+}
+
+.btn-glow:active {
+  transform: translateY(0);
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--neon-green);
+  border: 1px solid var(--neon-green);
+  clip-path: polygon(10% 0, 100% 0, 100% 70%, 90% 100%, 0 100%, 0 30%);
+}
+
+.btn-outline:hover {
+  background: rgba(57, 255, 20, 0.1);
+  box-shadow: 0 0 15px var(--neon-green);
+}
+
+/* Grid Layout */
+.tech-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.8s ease-out forwards;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--deep-black);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--neon-green);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--soft-cyan);
+}
+
+/* Existing Risk Gauge Integration */
 .risk-gauge {
-  background: conic-gradient(currentColor var(--percentage),
-      rgba(255, 255, 255, 0.05) 0);
+  background: conic-gradient(currentColor var(--percentage), rgba(255, 255, 255, 0.05) 0);
   border-radius: 50%;
   position: relative;
-  box-shadow: 0 0 30px rgba(var(--gauge-color-rgb), 0.1);
+  box-shadow: 0 0 30px rgba(var(--gauge-color-rgb), 0.2);
 }
 
 .risk-gauge::after {
   content: "";
   position: absolute;
   inset: 12%;
-  background: radial-gradient(circle at center, #161b2e 0%, #0a0e1a 100%);
+  background: radial-gradient(circle at center, #0a0f0f 0%, #050505 100%);
   border-radius: 50%;
-  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
-}
-
-/* Animations */
-.animate-slide-up {
-  animation: slideUp 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
-}
-
-@keyframes slideUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* Code Highlighting Sim */
-.code-token-keyword {
-  color: #ff7b72;
-}
-
-.code-token-string {
-  color: #a5d6ff;
-}
-
-.code-token-comment {
-  color: #8b949e;
-}
-
-.code-token-function {
-  color: #d2a8ff;
-}
-
-/* Custom Scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: #0a0e1a;
-}
-
-::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.2);
-}
-
-/* Premium Scan Progress Box */
-.scanBox {
-  background: rgba(0, 242, 255, 0.02);
-  backdrop-filter: blur(40px);
-  border: 1px solid rgba(0, 242, 255, 0.1);
-  border-radius: 2.5rem;
-  padding: 3rem;
-  margin-top: 3rem;
-  margin-bottom: 3rem;
-  position: relative;
-  overflow: hidden;
-}
-
-.scanBox::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(0, 242, 255, 0.3), transparent);
-}
-
-.animate-pulse-slow {
-  animation: pulse-slow 3s ease-in-out infinite;
-}
-
-@keyframes pulse-slow {
-
-  0%,
-  100% {
-    opacity: 0.4;
-  }
-
-  50% {
-    opacity: 0.7;
-  }
 }
