@@ -15,7 +15,7 @@ export function runSemgrep(targetDir: string) {
         }
 
         const output = execSync(
-            `semgrep --config ${configPath} ${targetDir} --json`,
+            `semgrep --config ${configPath} ${targetDir} --json --exclude node_modules`,
             { encoding: 'utf8' }
         )
 
